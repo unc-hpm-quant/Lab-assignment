@@ -20,7 +20,8 @@ You should first install [R](https://cran.r-project.org) and then [RStudio](http
 
 1) If you have access to GitHub CodeSpaces, click the green "<> Code" button at the top right on this repository page, and then select "Create codespace on main". (GitHub CodeSpaces is available with [GitHub Enterprise](https://github.com/enterprise) and [GitHub Education](https://education.github.com/).)
 
-2) Click "R (not attached)" ![Screenshot 2023-11-05 at 11.21.58](img/Screenshot 2023-11-05 at 11.21.58.png)
+2) Click "R (not attached)"
+   ![codespace1.png](img/codespace1.png)
 
 
 **2. RStudio Cloud**
