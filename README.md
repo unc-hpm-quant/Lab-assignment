@@ -1,46 +1,4 @@
 
-
-# HPM 881
-
-## Lecture 5 Lab: Interpretation of OLS
-
-### Data Preparation
-- **Read in the following variables** from the 2018 Full Year Consolidated File (HC-209): 
-  - `DVTEXP18`: Dental care expenditures for 2018
-  - `RACEV1X`: Race categories
-  - `AGELAST`: Age last birthday
-  - `EDUCYR`: Years of education
-  - `SEX`: Gender
-  - `INSCOV`: Insurance coverage type
-  - `RTHLTH53`: Self-reported physical health (Likert scale)
-
-- **Data Cleaning**:
-  - Drop observations with <=0 years of education
-  - Drop observations with missing/invalid responses to `RTHLTH53`
-
-- **Descriptive Statistics**: Describe the variables of interest.
-
-### Objective
-- **Racial Disparities**: Summarize dental expenditures by race categories in `RACEV1X`.
-
-### Visualizations
-- **Bar Graph**: Create a bar graph showing the ratio of mean dental expenditures for each race category in `RACEV1X` relative to White.
-
-### Statistical Analysis
-- **Unadjusted Means Approach**: Using t-tests, test for differences in mean dental expenditures between each race category in `RACEV1X` and White. Interpret any statistically significant differences.
-- **Residual Direct Effect**: Regression `DVTEXP18` on `RACEV1X`, `AGELAST`, `EDUCYR`, `SEX`, `INSCOV`, and `RTHLTH53`. Interpret any statistically significant differences.
-
-### IOM Approach
-- **Variables for Clinical Appropriateness and Need**: Suggest variables for inclusion.
-- **Variables for Operation of Health Care Systems**: Suggest variables for inclusion.
-
-### Predictions
-- **Predicted Expenditures**: Generate predicted dental expenditures for the average White person and for other racial categories.
-
-### Comparison
-- **IOM vs Residual Direct Effect**: Compare differences in predictions. Identify which approach generates larger disparities and for which racial groups.
-
-
 # How to Code in GitHub?
 
 ## Dev Containers in GitHub Codepaces
