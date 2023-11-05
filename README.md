@@ -61,6 +61,21 @@ You should start with the following steps.
 
     To rename files, you can use Rstudio's rename capability: from the "Files" pane, tick the file to rename, then click "Rename".  (Or, if you prefer the command line, you can use R's `file.rename()` function.)
 
+## Instructions for submitting lab assignments
+**Submit from the GitHub Website**
+1. Using STATA
+   Upload your log and do file to your repository (once you accept the assignment from GitHub classroom, you will be automatically assigned one in the HPM 881 organization repositories)  
+2. Using R  
+   Upload your R script file to your repository (once you accept the assignment from GitHub classroom, you will be automatically assigned one in the HPM 881 organization repositories)
+3. Click Commit button
+**Submit from the local GitHub Deskstop**
+1. Using STATA
+   Upload your log and do file to your repository (once you accept the assignment from GitHub classroom, you will be automatically assigned one in the HPM 881 organization repositories)  
+2. Using R  
+   Upload your R script file to your repository (once you accept the assignment from GitHub classroom, you will be automatically assigned one in the HPM 881 organization repositories)
+3. Click Commit to the main button
+   ![submit.png](img/submit.png)
+
 We will walk you through this process in the Day 1 lab, so don't worry if it seems complicated the first time.  This sort of careful workflow process and file management is part of learning practical data science too!
 
 * NOTE: Sometimes, the RStudio window may fail to open with a timeout error. If this happens, try again, or restart the Codepace.
