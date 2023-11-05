@@ -1,0 +1,668 @@
+---------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\trogdonj\OneDrive - University of North Carolina at Chapel 
+> Hill\Documents\teaching\HPM 881\Spring 2021\lectures\lecture 5\lecture5_lab.log
+  log type:  text
+ opened on:  22 Feb 2021, 16:14:12
+
+. 
+. /* This file is the lab for HPM 881 Unit 5 -- Interpretation
+> 
+>         Interpretation of racial categories using 3 different approaches: 
+>         1) unadjusted
+>         2) residual direct effect
+>         3) IOM approach
+> 
+>         Created: Dec. 1, 2020 */
+. 
+. * Read in the following variables from the 2018 Full Year Consolidated File (HC
+> -209): 
+. * DVTEXP18, RACEV1X, AGELAST, EDUCYR, SEX, INSCOV, and RTHLTH53.  
+. 
+.         use DVTEXP18 RACEV1X AGELAST EDUCYR SEX INSCOV RTHLTH53 using /*
+>                 */ "C:\Users\trogdonj\OneDrive - University of North Carolina a
+> t Chapel Hill\Documents\research\data\MEPS\H209.dta", clear
+
+. 
+. *1.     Get to know your data. Drop observations with <=0 years of education an
+> d with missing/invalid responses to RTHLTH53. 
+. *       Describe the variables of interest (i.e., find descriptive statistics).
+>  
+. 
+.         foreach X of varlist DVTEXP18 RACEV1X AGELAST SEX INSCOV  {
+  2.                 * No missing values for these variables
+.                 assert `X'~=. & `X'>=0
+  3.         }
+
+. 
+.         * Drop missings and zeros
+.         drop if EDUCYR <= 0
+(3,658 observations deleted)
+
+.         drop if RTHLTH53 <= 0 
+(332 observations deleted)
+
+. 
+.         * Continuous variables
+.         sum DVTEXP18 AGELAST
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |     26,471    388.5859    1337.008          0      81000
+     AGELAST |     26,471     43.2573    21.44122          5         85
+
+.         
+.         * Categorical variables
+.         foreach X of varlist RACEV1X SEX INSCOV EDUCYR RTHLTH53 {
+  2.                 tab `X', mi
+  3.         }
+
+                  RACE (EDITED/IMPUTED) |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+       1 WHITE - NO OTHER RACE REPORTED |     19,669       74.30       74.30
+       2 BLACK - NO OTHER RACE REPORTED |      4,134       15.62       89.92
+3 AMER INDIAN/ALASKA NATIVE-NO OTHER RA |        218        0.82       90.74
+ 4 ASIAN/NATV HAWAIIAN/PACFC ISL-NO OTH |      1,501        5.67       96.41
+              6 MULTIPLE RACES REPORTED |        949        3.59      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     26,471      100.00
+
+                   SEX |      Freq.     Percent        Cum.
+-----------------------+-----------------------------------
+                1 MALE |     12,548       47.40       47.40
+              2 FEMALE |     13,923       52.60      100.00
+-----------------------+-----------------------------------
+                 Total |     26,471      100.00
+
+       HEALTH |
+    INSURANCE |
+     COVERAGE |
+    INDICATOR |
+         2018 |      Freq.     Percent        Cum.
+--------------+-----------------------------------
+1 ANY PRIVATE |     16,271       61.47       61.47
+2 PUBLIC ONLY |      8,056       30.43       91.90
+  3 UNINSURED |      2,144        8.10      100.00
+--------------+-----------------------------------
+        Total |     26,471      100.00
+
+     YEARS OF EDUC WHEN FIRST |
+                 ENTERED MEPS |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+                            1 |        514        1.94        1.94
+                            2 |        511        1.93        3.87
+                            3 |        526        1.99        5.86
+                            4 |        496        1.87        7.73
+                            5 |        519        1.96        9.69
+                            6 |        762        2.88       12.57
+                            7 |        579        2.19       14.76
+                            8 |        769        2.91       17.66
+                            9 |        924        3.49       21.16
+                           10 |        986        3.72       24.88
+                           11 |      1,192        4.50       29.38
+                  12 GRADE 12 |      6,986       26.39       55.77
+            13 1 YEAR COLLEGE |      1,485        5.61       61.38
+           14 2 YEARS COLLEGE |      2,951       11.15       72.53
+           15 3 YEARS COLLEGE |        740        2.80       75.33
+           16 4 YEARS COLLEGE |      3,950       14.92       90.25
+          17 5+ YEARS COLLEGE |      2,581        9.75      100.00
+------------------------------+-----------------------------------
+                        Total |     26,471      100.00
+
+      PERCEIVED |
+HEALTH STATUS - |
+         RD 5/3 |      Freq.     Percent        Cum.
+----------------+-----------------------------------
+    1 EXCELLENT |      6,869       25.95       25.95
+    2 VERY GOOD |      8,589       32.45       58.40
+         3 GOOD |      7,738       29.23       87.63
+         4 FAIR |      2,540        9.60       97.22
+         5 POOR |        735        2.78      100.00
+----------------+-----------------------------------
+          Total |     26,471      100.00
+
+. 
+.         save lecture5_lab, replace
+file lecture5_lab.dta saved
+
+.         
+. 
+. *2.     We are interested in racial disparities in dental care expenditures. Su
+> mmarize dental expenditures by race categories in RACEV1X.
+. 
+.         by RACEV1X, sort: sum DVTEXP18
+
+---------------------------------------------------------------------------------
+-> RACEV1X = 1 WHITE - NO OTHER RACE REPORTED
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |     19,669     414.485    1394.421          0      81000
+
+---------------------------------------------------------------------------------
+-> RACEV1X = 2 BLACK - NO OTHER RACE REPORTED
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |      4,134    265.4115    994.9152          0      23399
+
+---------------------------------------------------------------------------------
+-> RACEV1X = 3 AMER INDIAN/ALASKA NATIVE-NO OTHER RACE
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |        218    320.4954    1204.768          0      11497
+
+---------------------------------------------------------------------------------
+-> RACEV1X = 4 ASIAN/NATV HAWAIIAN/PACFC ISL-NO OTH
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |      1,501    415.3884    1375.794          0      32000
+
+---------------------------------------------------------------------------------
+-> RACEV1X = 6 MULTIPLE RACES REPORTED
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    DVTEXP18 |        949    361.6175    1359.024          0      30352
+
+
+.         
+.         *or
+.         
+.         table RACEV1X, contents(mean DVTEXP18)
+
+---------------------------------------------------------
+                   RACE (EDITED/IMPUTED) | mean(DVTEXP18)
+-----------------------------------------+---------------
+        1 WHITE - NO OTHER RACE REPORTED |    414.4849764
+        2 BLACK - NO OTHER RACE REPORTED |    265.4114659
+3 AMER INDIAN/ALASKA NATIVE-NO OTHER RAC |    320.4954128
+  4 ASIAN/NATV HAWAIIAN/PACFC ISL-NO OTH |    415.3884077
+               6 MULTIPLE RACES REPORTED |    361.6174921
+---------------------------------------------------------
+
+. 
+. 
+. *3.     Create a bar graph showing the ratio of mean dental expenditures for ea
+> ch race category in RACEV1X relative to White. 
+. *       For example, if mean dental expenditures for White people = $150 and me
+> an dental expenditures for Black people = $100, 
+. *       the Black/White ratio would = 0.67. 
+. 
+.         preserve
+
+. 
+.         collapse (mean) DVTEXP18, by(RACEV1X)
+
+.         l
+
+     +---------------------------------------------------------+
+     |                                   RACEV1X      DVTEXP18 |
+     |---------------------------------------------------------|
+  1. |          1 WHITE - NO OTHER RACE REPORTED   414.4849764 |
+  2. |          2 BLACK - NO OTHER RACE REPORTED   265.4114659 |
+  3. | 3 AMER INDIAN/ALASKA NATIVE-NO OTHER RACE   320.4954128 |
+  4. |    4 ASIAN/NATV HAWAIIAN/PACFC ISL-NO OTH   415.3884077 |
+  5. |                 6 MULTIPLE RACES REPORTED   361.6174921 |
+     +---------------------------------------------------------+
+
+.         sum DVTEXP18 if RACEV1X==1, meanonly
+
+.         gen dvt_ratio = DVTEXP18 / r(mean)
+
+.         lab var dvt_ratio "Ratio relative to White"
+
+.         
+.         * Replace labels for graph
+.         lab def race 1 "White" 2 "Black" 3 "AI/AN" 4 "Asian/NH/PI" 6 "Multiple"
+
+.         lab val RACEV1X race
+
+.         l 
+
+     +--------------------------------------+
+     |     RACEV1X      DVTEXP18   dvt_ra~o |
+     |--------------------------------------|
+  1. |       White   414.4849764          1 |
+  2. |       Black   265.4114659   .6403404 |
+  3. |       AI/AN   320.4954128   .7732377 |
+  4. | Asian/NH/PI   415.3884077    1.00218 |
+  5. |    Multiple   361.6174921   .8724502 |
+     +--------------------------------------+
+
+.         
+.         graph bar (asis) dvt_ratio, over(RACEV1X) title("Ratio of Dental Expend
+> itures to White Race")
+
+.         graph export lecture5_lab_fig3.png, replace
+(file lecture5_lab_fig3.png written in PNG format)
+
+.         
+.         restore
+
+. 
+. 
+. *4.     Unadjusted means approach: Using t-tests, test for differences in mean 
+> dental expenditures between each race category in RACEV1X and White. 
+. *   Interpret any statistically significant differences. 
+. 
+.         * Loop over values of RACEV1X
+.         foreach i in 2 3 4 6 {
+  2.                 * ttest can only handle 2 groups in RACEV1X at once
+.                 ttest DVTEXP18 if RACEV1X==1 | RACEV1X==`i', by(RACEV1X)
+  3.         }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+ 1 WHITE |  19,669     414.485    9.942665    1394.421    394.9965    433.9734
+ 2 BLACK |   4,134    265.4115    15.47394    994.9152    235.0742    295.7487
+---------+--------------------------------------------------------------------
+combined |  23,803    388.5945    8.651866    1334.829    371.6363    405.5528
+---------+--------------------------------------------------------------------
+    diff |            149.0735     22.8184                 104.348     193.799
+------------------------------------------------------------------------------
+    diff = mean(1 WHITE) - mean(2 BLACK)                          t =   6.5330
+Ho: diff = 0                                     degrees of freedom =    23801
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 1.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 0.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+ 1 WHITE |  19,669     414.485    9.942665    1394.421    394.9965    433.9734
+3 AMER I |     218    320.4954     81.5972    1204.768    159.6709    481.3199
+---------+--------------------------------------------------------------------
+combined |  19,887    413.4547    9.874328     1392.49    394.1002    432.8092
+---------+--------------------------------------------------------------------
+    diff |            93.98956    94.83259               -91.89022    279.8693
+------------------------------------------------------------------------------
+    diff = mean(1 WHITE) - mean(3 AMER I)                         t =   0.9911
+Ho: diff = 0                                     degrees of freedom =    19885
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8392         Pr(|T| > |t|) = 0.3216          Pr(T > t) = 0.1608
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+ 1 WHITE |  19,669     414.485    9.942665    1394.421    394.9965    433.9734
+4 ASIAN/ |   1,501    415.3884    35.51101    1375.794    345.7319    485.0449
+---------+--------------------------------------------------------------------
+combined |  21,170     414.549    9.574466    1393.077    395.7824    433.3157
+---------+--------------------------------------------------------------------
+    diff |           -.9034314    37.30475               -74.02358    72.21672
+------------------------------------------------------------------------------
+    diff = mean(1 WHITE) - mean(4 ASIAN/)                         t =  -0.0242
+Ho: diff = 0                                     degrees of freedom =    21168
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.4903         Pr(|T| > |t|) = 0.9807          Pr(T > t) = 0.5097
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+ 1 WHITE |  19,669     414.485    9.942665    1394.421    394.9965    433.9734
+6 MULTIP |     949    361.6175    44.11578    1359.024    275.0416    448.1934
+---------+--------------------------------------------------------------------
+combined |  20,618    412.0516    9.700024    1392.823    393.0388    431.0644
+---------+--------------------------------------------------------------------
+    diff |            52.86748     46.2905               -37.86556    143.6005
+------------------------------------------------------------------------------
+    diff = mean(1 WHITE) - mean(6 MULTIP)                         t =   1.1421
+Ho: diff = 0                                     degrees of freedom =    20616
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8733         Pr(|T| > |t|) = 0.2534          Pr(T > t) = 0.1267
+
+. 
+.         *On average, white persons spend $149 more on dental services than blac
+> k people. 
+.         *Difference is statistically signifcant at 1% significance level.
+. 
+. 
+. *5.     Residual direct effect: Regression DVTEXP18 on RACEV1X, AGELAST, EDUCYR
+> , SEX, INSCOV, and RTHLTH53 using White as the reference category
+. *       for RACEV1X. Interpret any statistically significant differences in the
+>  RACEV1X categories. Be precise in your language. 
+. 
+.         regress DVTEXP18 ib1.RACEV1X AGELAST EDUCYR i.SEX i.INSCOV i.RTHLTH53 
+
+      Source |       SS           df       MS      Number of obs   =    26,471
+-------------+----------------------------------   F(13, 26457)    =     25.92
+       Model |   595166220        13  45782016.9   Prob > F        =    0.0000
+    Residual |  4.6722e+10    26,457  1765973.16   R-squared       =    0.0126
+-------------+----------------------------------   Adj R-squared   =    0.0121
+       Total |  4.7318e+10    26,470  1787590.41   Root MSE        =    1328.9
+
+--------------------------------------------------------------------------------
+      DVTEXP18 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+       RACEV1X |
+2 BLACK - N..  |  -120.5748    22.8867    -5.27   0.000    -165.4339   -75.71561
+3 AMER INDI..  |  -30.06597   90.60054    -0.33   0.740    -207.6479    147.5159
+4 ASIAN/NAT..  |   -5.41757   35.67686    -0.15   0.879    -75.34613    64.51099
+6 MULTIPLE ..  |  -17.10745   44.39793    -0.39   0.700    -104.1298    69.91488
+               |
+       AGELAST |   3.252538   .4560892     7.13   0.000     2.358578    4.146497
+        EDUCYR |   -3.07247   2.423468    -1.27   0.205    -7.822597    1.677656
+               |
+           SEX |
+     2 FEMALE  |   54.82552   16.43437     3.34   0.001     22.61326    87.03778
+               |
+      INSCOV18 |
+2 PUBLIC ONLY  |  -197.4504   19.50472   -10.12   0.000    -235.6807   -159.2202
+  3 UNINSURED  |  -345.5999   30.85163   -11.20   0.000    -406.0708    -285.129
+               |
+      RTHLTH53 |
+  2 VERY GOOD  |   -29.0979   21.83219    -1.33   0.183    -71.89017    13.69436
+       3 GOOD  |  -92.25865    22.6129    -4.08   0.000    -136.5811   -47.93616
+       4 FAIR  |  -92.31024   32.15542    -2.87   0.004    -155.3366   -29.28388
+       5 POOR  |  -93.57713   52.83553    -1.77   0.077    -197.1376    9.983338
+               |
+         _cons |   411.7228   31.83374    12.93   0.000      349.327    474.1187
+--------------------------------------------------------------------------------
+
+. 
+.         * Don't use factor notation for other covariates to make it easier to p
+> lug in means in 'margins'
+.         tab SEX, gen(sex)
+
+                   SEX |      Freq.     Percent        Cum.
+-----------------------+-----------------------------------
+                1 MALE |     12,548       47.40       47.40
+              2 FEMALE |     13,923       52.60      100.00
+-----------------------+-----------------------------------
+                 Total |     26,471      100.00
+
+.         tab INSCOV, gen(ins)
+
+       HEALTH |
+    INSURANCE |
+     COVERAGE |
+    INDICATOR |
+         2018 |      Freq.     Percent        Cum.
+--------------+-----------------------------------
+1 ANY PRIVATE |     16,271       61.47       61.47
+2 PUBLIC ONLY |      8,056       30.43       91.90
+  3 UNINSURED |      2,144        8.10      100.00
+--------------+-----------------------------------
+        Total |     26,471      100.00
+
+.         tab RTHLTH53, gen(hlth)
+
+      PERCEIVED |
+HEALTH STATUS - |
+         RD 5/3 |      Freq.     Percent        Cum.
+----------------+-----------------------------------
+    1 EXCELLENT |      6,869       25.95       25.95
+    2 VERY GOOD |      8,589       32.45       58.40
+         3 GOOD |      7,738       29.23       87.63
+         4 FAIR |      2,540        9.60       97.22
+         5 POOR |        735        2.78      100.00
+----------------+-----------------------------------
+          Total |     26,471      100.00
+
+. 
+.         regress DVTEXP18 ib1.RACEV1X AGELAST EDUCYR sex2 ins2 ins3 hlth2-hlth5
+
+      Source |       SS           df       MS      Number of obs   =    26,471
+-------------+----------------------------------   F(13, 26457)    =     25.92
+       Model |   595166220        13  45782016.9   Prob > F        =    0.0000
+    Residual |  4.6722e+10    26,457  1765973.16   R-squared       =    0.0126
+-------------+----------------------------------   Adj R-squared   =    0.0121
+       Total |  4.7318e+10    26,470  1787590.41   Root MSE        =    1328.9
+
+--------------------------------------------------------------------------------
+      DVTEXP18 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+       RACEV1X |
+2 BLACK - N..  |  -120.5748    22.8867    -5.27   0.000    -165.4339   -75.71561
+3 AMER INDI..  |  -30.06597   90.60054    -0.33   0.740    -207.6479    147.5159
+4 ASIAN/NAT..  |   -5.41757   35.67686    -0.15   0.879    -75.34613    64.51099
+6 MULTIPLE ..  |  -17.10745   44.39793    -0.39   0.700    -104.1298    69.91488
+               |
+       AGELAST |   3.252538   .4560892     7.13   0.000     2.358578    4.146497
+        EDUCYR |   -3.07247   2.423468    -1.27   0.205    -7.822597    1.677656
+          sex2 |   54.82552   16.43437     3.34   0.001     22.61326    87.03778
+          ins2 |  -197.4504   19.50472   -10.12   0.000    -235.6807   -159.2202
+          ins3 |  -345.5999   30.85163   -11.20   0.000    -406.0708    -285.129
+         hlth2 |   -29.0979   21.83219    -1.33   0.183    -71.89017    13.69436
+         hlth3 |  -92.25865    22.6129    -4.08   0.000    -136.5811   -47.93616
+         hlth4 |  -92.31024   32.15542    -2.87   0.004    -155.3366   -29.28388
+         hlth5 |  -93.57713   52.83553    -1.77   0.077    -197.1376    9.983338
+         _cons |   411.7228   31.83374    12.93   0.000      349.327    474.1187
+--------------------------------------------------------------------------------
+
+.         est store ols
+
+.         
+.         *Holding age, education, sex, health insurance, and self-reported healt
+> h constant, expected dental expenditures are $121 less for
+.         *black persons relative to white persons. 
+.         *Holding age, education, sex, health insurance, and self-reported healt
+> h constant, expected dental expenditures are not significantly 
+.         *different than white persons for other race groups.  
+. 
+. 
+. *6.     IOM approach: Which variables would you include in the “Clinical Approp
+> riateness and Need” category? 
+. *       Which variables would you include in the “Operation of health care syst
+> ems and legal and regulatory environment” category? 
+. *       NOTE: We do not have measures of patient preferences.
+. 
+.         *Clinical appropriateness and need: AGELAST SEX RTHLTH53
+.         *Operation: EDUCYR INSCOV
+. 
+. 
+. *7.     Generate predicted dental expenditures for the average White person.
+. 
+.         margins if RACEV1X==1
+
+Predictive margins                              Number of obs     =     19,669
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _cons |    414.485   9.475473    43.74   0.000     395.9125    433.0574
+------------------------------------------------------------------------------
+
+.         
+.         *NOTE: Prediction should equal unadjusted average dental expenditures f
+> or white persons since they are the reference group
+.         
+. 
+. *8.     For each other race category in RACEV1X, generate predicted dental expe
+> nditures for the average person but use the White 
+. *       averages for Clinical Appropriateness and Need variables for every raci
+> al group. 
+. 
+.         * Replace every observations Clinical variables with white means
+.         preserve
+
+. 
+.         sum sex2 AGE hlth2-hlth5 if RACEV1X==1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        sex2 |     19,669    .5185317    .4996692          0          1
+     AGELAST |     19,669    44.28781    21.55744          6         85
+       hlth2 |     19,669    .3327063    .4711943          0          1
+       hlth3 |     19,669    .2923382    .4548484          0          1
+       hlth4 |     19,669    .0918196    .2887785          0          1
+-------------+---------------------------------------------------------
+       hlth5 |     19,669    .0279119    .1647248          0          1
+
+. 
+.         foreach X of var sex2 AGE hlth2-hlth5 {
+  2.                 sum `X' if RACEV1X==1, meanonly
+  3.                 replace `X' = r(mean)
+  4.         }
+variable sex2 was byte now float
+(26,471 real changes made)
+variable AGELAST was byte now float
+(26,471 real changes made)
+variable hlth2 was byte now float
+(26,471 real changes made)
+variable hlth3 was byte now float
+(26,471 real changes made)
+variable hlth4 was byte now float
+(26,471 real changes made)
+variable hlth5 was byte now float
+(26,471 real changes made)
+
+. 
+.         sum sex2 AGE hlth2-hlth5
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        sex2 |     26,471    .5185317           0   .5185317   .5185317
+     AGELAST |     26,471    44.28782           0   44.28782   44.28782
+       hlth2 |     26,471    .3327063           0   .3327063   .3327063
+       hlth3 |     26,471    .2923382           0   .2923382   .2923382
+       hlth4 |     26,471    .0918196           0   .0918196   .0918196
+-------------+---------------------------------------------------------
+       hlth5 |     26,471    .0279119           0   .0279119   .0279119
+
+. 
+.         * 'over()' option is like specifying separate 'if RACEV1X==.' options. 
+.         * Calculates predictions restricted to each subgroup
+.         * This is DIFFERENT than 'margins RACEV1X', which would pretend each pe
+> rson was each race
+.         * 'post' option is so we can use results from margin command
+.         margins, over(RACEV1X) post
+
+Predictive margins                              Number of obs     =     26,471
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+over         : RACEV1X
+
+--------------------------------------------------------------------------------
+               |            Delta-method
+               |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+       RACEV1X |
+1 WHITE - N..  |    414.485   9.475473    43.74   0.000     395.9125    433.0574
+2 BLACK - N..  |   274.9597   20.76102    13.24   0.000      234.267    315.6524
+3 AMER INDI..  |   346.6892   90.07197     3.85   0.000     170.1433    523.2351
+4 ASIAN/NAT..  |   420.2261   34.33743    12.24   0.000     352.9229    487.5293
+6 MULTIPLE ..  |   392.0022   43.40549     9.03   0.000     306.9251    477.0793
+--------------------------------------------------------------------------------
+
+. 
+. *9.     Compare differences in predictions between race categories and White us
+> ing the IOM approach vs the residual direct effect approach. 
+. *       Which approach generates larger disparities? For which racial groups? 
+. 
+.         * Residual direct effect -- black vs white difference is -$121 (see reg
+> ression from #5)
+.         * IOM approach
+.                 * To see how to reference the predictions
+.                 margins, coeflegend
+
+Predictive margins                              Number of obs     =     26,471
+Model VCE    : OLS
+
+Expression   : Linear prediction, predict()
+over         : RACEV1X
+
+--------------------------------------------------------------------------------
+               |     Margin  Legend
+---------------+----------------------------------------------------------------
+       RACEV1X |
+1 WHITE - N..  |    414.485  _b[1bn.RACEV1X]
+2 BLACK - N..  |   274.9597  _b[2.RACEV1X]
+3 AMER INDI..  |   346.6892  _b[3.RACEV1X]
+4 ASIAN/NAT..  |   420.2261  _b[4.RACEV1X]
+6 MULTIPLE ..  |   392.0022  _b[6.RACEV1X]
+--------------------------------------------------------------------------------
+
+. 
+.                 * What is the differene between white and black?
+.                 di _b[1bn.RACEV1X] - _b[2.RACEV1X]
+139.52529
+
+. 
+.                 * Is difference significant
+.                 test _b[1bn.RACEV1X] = _b[2.RACEV1X]
+
+ ( 1)  1bn.RACEV1X - 2.RACEV1X = 0
+
+       F(  1, 26457) =   37.38
+            Prob > F =    0.0000
+
+. 
+.                 * Black vs white difference is -$140 and statistically signific
+> ant at the 1% significance level (99% confidence level).
+.                 * So IOM approach generates a slightly larger disparity than th
+> e residual effect approach. 
+. 
+.                 * Check other differences
+.                 foreach i in 3 4 6 {
+  2.                         test _b[1bn.RACEV1X] = _b[`i'.RACEV1X]
+  3.                 }
+
+ ( 1)  1bn.RACEV1X - 3.RACEV1X = 0
+
+       F(  1, 26457) =    0.56
+            Prob > F =    0.4541
+
+ ( 1)  1bn.RACEV1X - 4.RACEV1X = 0
+
+       F(  1, 26457) =    0.03
+            Prob > F =    0.8720
+
+ ( 1)  1bn.RACEV1X - 6.RACEV1X = 0
+
+       F(  1, 26457) =    0.26
+            Prob > F =    0.6128
+
+.                 * No other racial differences are statistically significant 
+. 
+.         restore
+
+. 
+.         * NOTE: Another way to get the difference is to focus on what's left in
+>  the prediction equations
+. 
+.                 est restore ols
+(results ols are active now)
+
+. 
+.                 * Get means for Operation variables
+.                 foreach X of var EDUCYR ins2 ins3 {
+  2.                         sum `X' if RACEV1X==1, meanonly
+  3.                         scalar `X'w = r(mean)
+  4.                         sum `X' if RACEV1X==2, meanonly
+  5.                         scalar `X'b = r(mean)
+  6.                 }
+
+. 
+.                 * Predicted difference between White and Black respondents in I
+> OM approach
+.                 scalar iom = -_b[2.RACEV1X] + _b[EDUCYR]*(EDUCYRw - EDUCYRb) + 
+> _b[ins2]*(ins2w - ins2b) + _b[ins3]*(ins3w - ins3b)
+
+.                 di iom
+139.52529
+
+.         
+. log close
+      name:  <unnamed>
+       log:  C:\Users\trogdonj\OneDrive - University of North Carolina at Chapel 
+> Hill\Documents\teaching\HPM 881\Spring 2021\lectures\lecture 5\lecture5_lab.log
+  log type:  text
+ closed on:  22 Feb 2021, 16:14:14
+---------------------------------------------------------------------------------
