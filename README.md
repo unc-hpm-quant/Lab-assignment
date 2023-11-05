@@ -67,7 +67,3 @@ We will walk you through this process in the Day 1 lab, so don't worry if it see
 ## Reference
 1. ME314, LSE Methods Summer Programme 2021
 2. revodavid/devcontainers-rstudio
-
-In RStudio, use the File menu to open the `/workspaces`, folder and then browse to open the file `devcontainers-rstudio` / `explore-analyze-data-with-R` / `solution` /  `all-systems-check` / `test.Rmd`. Use the "Knit" submenu to "Knit as HTML" and view the rendered "R Notebook" Markdown document.
-
-* Note: You may be prompted to install an updated version of the `markdown` package. Select "Yes".
