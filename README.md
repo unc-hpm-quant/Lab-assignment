@@ -18,10 +18,13 @@ You should first install [R](https://cran.r-project.org) and then [RStudio](http
 
 **1. Codepaces**
 
-If you have access to GitHub CodeSpaces, click the green "<> Code" button at the top right on this repository page, and then select "Create codespace on main". (GitHub CodeSpaces is available with [GitHub Enterprise](https://github.com/enterprise) and [GitHub Education](https://education.github.com/).)
+1) If you have access to GitHub CodeSpaces, click the green "<> Code" button at the top right on this repository page, and then select "Create codespace on main". (GitHub CodeSpaces is available with [GitHub Enterprise](https://github.com/enterprise) and [GitHub Education](https://education.github.com/).)
+
+2) Click "R (not attached)" ![Screenshot 2023-11-05 at 11.21.58](img/Screenshot 2023-11-05 at 11.21.58.png)
+
 
 **2. RStudio Cloud**
-Click the Forwarded Ports "Radio" icon at the bottom of the VS Code Online window.
+Click the Forwarded Ports "Radio (some times only shows 8787)" icon at the bottom of the VS Code Online window.
 
 ![Forwarded Ports](img/forwarded_ports.png)
 
@@ -45,7 +48,7 @@ You should start with the following steps.
     a) Click a project button (near the top-right corner of the screen)  
     b) Select "New Project" (this will open a popup window)  
     c) Select "Version Control"  
-    d) Select "Git"  
+    d) Select "Git"  ![R studio.png](img/R%20studio%201.png)
     e) Enter this repository URL (https://github.com/unc-hpm-quant/Lab-assignment)  
     2) Code online, open the codespace/Colab/RStudio cloud.  
     a) Click the data folder, find the data files  
