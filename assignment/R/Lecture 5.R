@@ -7,7 +7,7 @@
 # Created: Dec. 1, 2020
 # Read in the data
 library(haven)
-lab5 <-read_dta( '/workspaces/lecture-5-lab-v2-Shuyi-Song')
+lab5 <-read_dta('.data/lecture5_lab.dta')
 # 1. Get to know your data
 # Drop observations with <=0 years of education and with missing/invalid responses to RTHLTH53.
 data <- subset(data, EDUCYR > 0 & RTHLTH53 > 0)
